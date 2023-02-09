@@ -26,5 +26,4 @@ stages:
                 scriptType: 'bash'
                 scriptLocation: 'inlineScript'
                 inlineScript: |
-                  az acr login --name AlexRampUpTest
-                  --expose-token --output tsv --query accessToken
+                  az acr login --name AlexRampUpTest --expose-token --output tsv --query accessToken

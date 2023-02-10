@@ -1,0 +1,44 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- none
+
+stages:
+  - stage: Build 
+    displayName: Build stage  
+    jobs:
+    - job: Build
+      displayName: Build
+      pool:
+        vmImage: ubuntu-latest
+      steps:
+      - task: Docker@2
+        displayName: Build and push an image to container registry
+        inputs:
+          containerRegistry: 'AlexRampUpTest'
+          repository: 'alexramuptest20230209'
+          command: 'buildAndPush'
+          Dockerfile: '**/Dockerfile'
+
+
+#  - stage: Deploy
+#    displayName: Deploy stage
+#    jobs:
+#    - deployment: Deploy
+#      displayName: Deploy
+#      environment: 'test'
+#      strategy:
+#        runOnce:
+#          deploy:
+#            steps:
+#            - task: AzureCLI@2
+#              displayName: Create imagePullSecret
+#              inputs:
+#                azureSubscription: 'Microsoft Azure Internal Consumption(4728f3f2-8386-4527-ae25-60e3318585a0)'
+#                scriptType: 'bash'
+#                scriptLocation: 'inlineScript'
+#                inlineScript: |
+#                  az acr login --name AlexRampUpTest --expose-token --output tsv --query accessToken

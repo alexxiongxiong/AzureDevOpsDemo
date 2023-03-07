@@ -19,7 +19,7 @@ stages:
       steps:
       - task: Bash@3
         inputs:
-          filePath: '/EnvironmentSetting/Preinstall_Package.sh'
+          filePath: 'EnvironmentSetting/Preinstall_Package.sh'
       - task: Docker@2
         displayName: Build and push an image to container registry
         inputs:

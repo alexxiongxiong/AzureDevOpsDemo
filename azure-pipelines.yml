@@ -7,6 +7,11 @@
 trigger:
 - none
 
+#
+
+#variables:
+#如何注释一段代码
+
 stages:
   - stage: Build 
     displayName: Build stage  

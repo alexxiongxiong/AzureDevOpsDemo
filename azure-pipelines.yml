@@ -87,6 +87,13 @@ stages:
                 inlineScript: 'az account set --subscription 4728f3f2-8386-4527-ae25-60e3318585a0; az aks get-credentials --resource-group CNIAKS --name cniaks --admin;'
             - task: Bash@3
               inputs:
+                targetType: 'inline'
+                script: |
+                  # Write your commands here
+                  
+                  dos2unix EnvironmentSetting/check_deployment_existing.sh
+            - task: Bash@3
+              inputs:
                 filePath: 'EnvironmentSetting/check_deployment_existing.sh'
 
 # deploy application into AKS

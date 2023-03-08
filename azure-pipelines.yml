@@ -18,7 +18,7 @@ trigger:
 variables:
   containerRegistry: 'AlexRampUpTest'
   imagerepository: 'alexramuptest20230209'
-  tag: '$(Build.BuildId)'
+  tag: $(Build.BuildId)
   vmImageName: 'ubuntu-latest'
 
 stages:
@@ -70,9 +70,10 @@ stages:
                 manifests: |
                   $(Build.SourcesDirectory)/manifests/deployment.yaml
                   $(Build.SourcesDirectory)/manifests/service.yaml
-                containers: |
+                : |
                   $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
-
+                rolloutStatusTimeout: 120
+              
   #           - task: KubernetesManifest@0
   #             displayName: Create imagePullSecret
   #             inputs:

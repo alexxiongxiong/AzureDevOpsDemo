@@ -70,7 +70,7 @@ stages:
                 manifests: |
                   $(Build.SourcesDirectory)/manifests/deployment.yaml
                   $(Build.SourcesDirectory)/manifests/service.yaml
-                : |
+                containers : |
                   $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
                 rolloutStatusTimeout: 120
               

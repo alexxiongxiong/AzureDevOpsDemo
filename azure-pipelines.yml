@@ -47,10 +47,22 @@ stages:
           tags: |
             $(tag)
 
+##run deploy stage manually
+  - stage: ManualApprovalbeforedeploy
+    dependsOn: Build
+    jobs: 
+    - job: ManualApprovalJob
+      displayName: Manual Approval (Agentless job)
+      pool: server
+      steps:
+      - task: ManualValidation@0
+        displayName: Manual Validation
+        inputs:
+          notifyUsers: 'xinhaoxiong@microsoft.com'
 
   - stage: Deploy
     displayName: Deploy stage
-    dependsOn: Build
+    dependsOn: stage2
     jobs:
     - deployment: Deploy
       displayName: Deploy job

@@ -66,10 +66,10 @@ stages:
                 kubernetesServiceConnection: 'cniaks-admin-kubeconfig'
                 namespace: 'azuredevopsapp'
                 manifests: |
-                  $(System.ArtifactsDirectory)/manifests/deployment.yml
-                  $(System.ArtifactsDirectory)/manifests/service.yml
+                  /manifests/deployment.yml
+                  /manifests/service.yml
                 containers: |
-                  $(containerRegistry)/$(imageRepository):$(tag)
+                  $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
 
   #           - task: KubernetesManifest@0
   #             displayName: Create imagePullSecret

@@ -47,6 +47,7 @@ stages:
           tags: |
             $(tag)
 
+
   - stage: Deploy
     displayName: Deploy stage
     dependsOn: Build
@@ -60,6 +61,7 @@ stages:
         runOnce:
           deploy:
             steps:
+            - checkout: self
             - task: KubernetesManifest@0
               inputs:
                 action: 'deploy'

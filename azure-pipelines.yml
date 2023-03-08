@@ -16,7 +16,7 @@ trigger:
 - none
 
 variables:
-  containerRegistry: 'AlexRampUpTest'
+  containerRegistry: 'alexrampuptest'
   imagerepository: 'alexramuptest20230209'
   tag: $(Build.BuildId)
   vmImageName: 'ubuntu-latest'

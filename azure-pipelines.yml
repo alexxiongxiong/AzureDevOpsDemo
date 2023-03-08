@@ -59,7 +59,6 @@ stages:
                 namespace: 'azuredevopsapp'
                 manifests: |
                   **/deployment.yaml
-                  **/service.yaml
                 containers: |
                   $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
 

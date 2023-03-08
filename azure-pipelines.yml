@@ -74,12 +74,22 @@ stages:
           deploy:
             steps:
             - checkout: self
+
+#Check whether the deployment has been existing in the AKS; if yes, delete it.
             - task: KubectlInstaller@0
               inputs:
                 kubectlVersion: 'latest'
+            - task: AzureCLI@2
+              inputs:
+                azureSubscription: 'Microsoft Azure Internal Consumption(4728f3f2-8386-4527-ae25-60e3318585a0)'
+                scriptType: 'bash'
+                scriptLocation: 'inlineScript'
+                inlineScript: 'az account set --subscription 4728f3f2-8386-4527-ae25-60e3318585a0; az aks get-credentials --resource-group CNIAKS --name cniaks;'
             - task: Bash@3
               inputs:
                 filePath: 'EnvironmentSetting/check_deployment_existing.sh'
+
+# deploy application into AKS
             - task: KubernetesManifest@0
               inputs:
                 action: 'deploy'

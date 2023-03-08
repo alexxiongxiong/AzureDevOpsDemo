@@ -6,5 +6,5 @@ if [ $? -eq 0 ]
 then
   kubectl delete deployment ${deployment_name} -n ${namespace_name}
 else
-  echo "No old deployment! start to deploy."
+  echo "No old deployment! Start to deploy!"
 fi

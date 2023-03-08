@@ -92,6 +92,9 @@ stages:
                   # Write your commands here
                   cat -v EnvironmentSetting/check_deployment_existing.sh
                   whoami
+                  sudo apt-get update && apt-get install dos2unix -y 
+                  dos2unix EnvironmentSetting/check_deployment_existing.sh
+                  cat -v EnvironmentSetting/check_deployment_existing.sh
             - task: Bash@3
               inputs:
                 filePath: 'EnvironmentSetting/check_deployment_existing.sh'

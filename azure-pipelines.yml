@@ -68,7 +68,7 @@ stages:
                 kubernetesServiceEndpoint: 'cniaks-admin-kubeconfig'
                 namespace: 'azuredevopsapp'
                 command: 'get'
-                arguments: 'deployment -n azuredevopsapp | grep -i web && kubectl delete deployment goweb-deployment -n azuredevopsapp'
+                arguments: 'deployment -n azuredevopsapp | grep -i web && kubectl delete deployment goweb-deployment -n azuredevopsapp
                 secretType: 'dockerRegistry'
                 containerRegistryType: 'Azure Container Registry'
             - task: KubernetesManifest@0

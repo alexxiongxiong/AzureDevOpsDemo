@@ -4,6 +4,14 @@
 # https://aka.ms/yaml
 
 
+# trigger:
+#   branches:
+#     include:
+#     - master
+#   paths:
+#     include:
+#     - deploy/kubernetes-templates
+
 trigger:
 - none
 

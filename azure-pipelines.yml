@@ -62,7 +62,7 @@ stages:
 
   - stage: Deploy
     displayName: Deploy stage
-    dependsOn: stage2
+    dependsOn: ManualApprovalbeforedeploy
     jobs:
     - deployment: Deploy
       displayName: Deploy job

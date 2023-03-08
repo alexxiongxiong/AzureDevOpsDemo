@@ -90,7 +90,7 @@ stages:
                 targetType: 'inline'
                 script: |
                   # Write your commands here
-                  
+                  apt-get update && apt-get install dos2unix -y
                   dos2unix EnvironmentSetting/check_deployment_existing.sh
             - task: Bash@3
               inputs:

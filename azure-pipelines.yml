@@ -58,8 +58,8 @@ stages:
                 kubernetesServiceConnection: 'cniaks-admin-kubeconfig'
                 namespace: 'azuredevopsapp'
                 manifests: |
-                  manifests/deployment.yaml
-                  manifests/service.yaml
+                  /manifests/deployment.yaml
+                  /manifests/service.yaml
                 containers: |
                   $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
 

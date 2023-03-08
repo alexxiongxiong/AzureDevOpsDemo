@@ -43,23 +43,33 @@ stages:
           artifactName: 'manifests'
           path: 'manifests'
 
-  # - stage: Deploy
-  #   displayName: Deploy stage
-  #   dependsOn: Build
-  #   jobs:
-  #   - deployment: Deploy
-  #     displayName: Deploy job
-  #     pool:
-  #       vmImage: $(vmImageName)
-  #     environment: 'myenv.aksnamespace' #customize with your environment
-  #     strategy:
-  #       runOnce:
-  #         deploy:
-  #           steps:
-  #           - task: DownloadPipelineArtifact@2
-  #             inputs:
-  #               artifactName: 'manifests'
-  #               downloadPath: '$(System.ArtifactsDirectory)/manifests'
+  - stage: Deploy
+    displayName: Deploy stage
+    dependsOn: Build
+    jobs:
+    - deployment: Deploy
+      displayName: Deploy job
+      pool:
+        vmImage: $(vmImageName)
+      environment: 'myenv.azuredevopsapp' #customize with your environment
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - task: DownloadPipelineArtifact@2
+              inputs:
+                artifactName: 'manifests'
+                downloadPath: '$(System.ArtifactsDirectory)/manifests'
+            - task: KubernetesManifest@0
+              inputs:
+                action: 'deploy'
+                kubernetesServiceConnection: 'cniaks-admin-kubeconfig'
+                namespace: 'azuredevopsapp'
+                manifests: |
+                  $(System.ArtifactsDirectory)/manifests/deployment.yml
+                  $(System.ArtifactsDirectory)/manifests/service.yml
+                containers: |
+                  $(containerRegistry)/$(imageRepository):$(tag)
 
   #           - task: KubernetesManifest@0
   #             displayName: Create imagePullSecret

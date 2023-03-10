@@ -7,7 +7,7 @@ spec:
   ingressClassName: nginx
   tls:
   - hosts:
-    - demo.azure.com
+    - dev.demo.azure.com
     secretName: ingress-tls-csi
   rules:
   - host: dev.demo.azure.com

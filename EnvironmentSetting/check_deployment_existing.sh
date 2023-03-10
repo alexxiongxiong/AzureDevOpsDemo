@@ -1,6 +1,14 @@
 #!/bin/bash
 deployment_name="goweb-deployment"
 namespace_name="azuredevopsapp"
+kubectl get namespace | grep -i ${deployment_name}
+if [ $? -eq 0 ]
+then
+  "Namespace ${deployment_name} already exists"
+else
+  kubectl create namespace $namespace_name
+fi
+
 kubectl get deployment -n ${namespace_name} | grep -i ${deployment_name}
 if [ $? -eq 0 ]
 then

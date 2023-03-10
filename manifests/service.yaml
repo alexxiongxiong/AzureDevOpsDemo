@@ -6,17 +6,10 @@ metadata:
   name: my-goweb
   namespace: azuredevopsapp
 spec:
-  allocateLoadBalancerNodePorts: true
-  externalTrafficPolicy: Cluster
-  internalTrafficPolicy: Cluster
-  ipFamilies:
-  - IPv4
-  ipFamilyPolicy: SingleStack
   ports:
   - port: 8000
     protocol: TCP
     targetPort: 8000
   selector:
     app: goweb
-  sessionAffinity: None
-  type: LoadBalancer
+  type: ClusterIP

@@ -181,6 +181,6 @@ stages:
                 kubernetesServiceConnection: 'devcniaks-admin-kubeconfig'
                 namespace: 'azuredevopsapp'
                 manifests: |
-                  $(Build.SourcesDirectory)/manifests/ingress.yaml
+                  $(Build.SourcesDirectory)/manifests/dev_ingress.yaml
                 rolloutStatusTimeout: 60
               condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/patch1'))

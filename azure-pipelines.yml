@@ -159,12 +159,13 @@ stages:
                 inlineScript: 'az account set --subscription 4728f3f2-8386-4527-ae25-60e3318585a0; az extension add --name aks-preview; az aks addon show --addon azure-keyvault-secrets-provider  --name devcniaks --resource-group devcniaks || az aks addon enable --addon azure-keyvault-secrets-provider  --name devcniaks --resource-group devcniaks;'
               condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/patch1'))
 
-###check helm client whether install
+###check helm client whether install and install ingress controller
             - task: Bash@3
               inputs:
                 filePath: 'manifests/nginx_ingress_controller_installation.sh'
 
-###if main version, deploy to prod environment.
+###setup ingress rules
+####for prod environment.
             - task: KubernetesManifest@0
               inputs:
                 action: 'deploy'
@@ -174,7 +175,7 @@ stages:
                   $(Build.SourcesDirectory)/manifests/ingress.yaml
                 rolloutStatusTimeout: 60
               condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-###if patch version, deploy to dev environment.            
+####for dev environment.            
             - task: KubernetesManifest@0
               inputs:
                 action: 'deploy'

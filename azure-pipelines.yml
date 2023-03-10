@@ -172,9 +172,7 @@ stages:
                 namespace: 'azuredevopsapp'
                 manifests: |
                   $(Build.SourcesDirectory)/manifests/ingress.yaml
-                containers : |
-                  $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
-                rolloutStatusTimeout: 120
+                rolloutStatusTimeout: 60
               condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 ###if patch version, deploy to dev environment.            
             - task: KubernetesManifest@0
@@ -184,7 +182,5 @@ stages:
                 namespace: 'azuredevopsapp'
                 manifests: |
                   $(Build.SourcesDirectory)/manifests/ingress.yaml
-                containers : |
-                  $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
-                rolloutStatusTimeout: 120
+                rolloutStatusTimeout: 60
               condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/patch1'))

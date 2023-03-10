@@ -51,7 +51,7 @@ stages:
           artifactName: 'manifests'
           path: 'manifests'
 
-##run deploy stage manually
+#get approval before deploying
   - stage: ManualApprovalbeforedeploy
     dependsOn: Build
     jobs: 
@@ -64,6 +64,7 @@ stages:
         inputs:
           notifyUsers: 'xinhaoxiong@microsoft.com'
 
+#start deploying
   - stage: Deploy
     displayName: Deploy stage
     dependsOn: ManualApprovalbeforedeploy

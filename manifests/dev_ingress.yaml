@@ -7,14 +7,14 @@ spec:
   ingressClassName: nginx
   tls:
   - hosts:
-    - dev.demo.azure.com
+    - demo.azure.com
     secretName: ingress-tls-csi
   rules:
-  - host: demo.azure.com
+  - host: dev.demo.azure.com
     http:
       paths:
       - path: /
-        pathType: Prefix
+        pathType: Prefix      
         backend:
           service:
             name: my-goweb

@@ -90,6 +90,15 @@ stages:
                 scriptLocation: 'inlineScript'
                 inlineScript: 'az account set --subscription 4728f3f2-8386-4527-ae25-60e3318585a0; az aks get-credentials --resource-group CNIAKS --name cniaks --admin;'
                 condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+
+            - task: AzureCLI@2
+              inputs:
+                azureSubscription: 'Microsoft Azure Internal Consumption(4728f3f2-8386-4527-ae25-60e3318585a0)'
+                scriptType: 'bash'
+                scriptLocation: 'inlineScript'
+                inlineScript: 'az account set --subscription 4728f3f2-8386-4527-ae25-60e3318585a0; az aks get-credentials --resource-group DevCNIAKS --name DevCNIAKS;'
+                condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/patch1'))
+
             - task: Bash@3
               inputs:
                 targetType: 'inline'
@@ -113,4 +122,17 @@ stages:
                   $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
                 rolloutStatusTimeout: 120
                 condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+
+            - task: KubernetesManifest@0
+              inputs:
+                action: 'deploy'
+                kubernetesServiceConnection: 'devcniaks-admin-kubeconfig'
+                namespace: 'azuredevopsapp'
+                manifests: |
+                  $(Build.SourcesDirectory)/manifests/deployment.yaml
+                  $(Build.SourcesDirectory)/manifests/service.yaml
+                containers : |
+                  $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
+                rolloutStatusTimeout: 120
+                condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/patch1'))
 

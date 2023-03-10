@@ -163,3 +163,28 @@ stages:
             - task: Bash@3
               inputs:
                 filePath: 'manifests/nginx_ingress_controller_installation.sh'
+
+###if main version, deploy to prod environment.
+            - task: KubernetesManifest@0
+              inputs:
+                action: 'deploy'
+                kubernetesServiceConnection: 'cniaks-admin-kubeconfig'
+                namespace: 'azuredevopsapp'
+                manifests: |
+                  $(Build.SourcesDirectory)/manifests/ingress.yaml
+                containers : |
+                  $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
+                rolloutStatusTimeout: 120
+              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+###if patch version, deploy to dev environment.            
+            - task: KubernetesManifest@0
+              inputs:
+                action: 'deploy'
+                kubernetesServiceConnection: 'devcniaks-admin-kubeconfig'
+                namespace: 'azuredevopsapp'
+                manifests: |
+                  $(Build.SourcesDirectory)/manifests/ingress.yaml
+                containers : |
+                  $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
+                rolloutStatusTimeout: 120
+              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/patch1'))

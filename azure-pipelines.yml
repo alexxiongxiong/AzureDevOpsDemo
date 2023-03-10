@@ -87,7 +87,7 @@ stages:
                 scriptType: 'bash'
                 scriptLocation: 'inlineScript'
                 inlineScript: 'az account set --subscription 4728f3f2-8386-4527-ae25-60e3318585a0; az aks get-credentials --resource-group CNIAKS --name cniaks --admin;'
-                condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 ###if patch version, deploy to dev environment.
             - task: AzureCLI@2
               inputs:
@@ -95,7 +95,7 @@ stages:
                 scriptType: 'bash'
                 scriptLocation: 'inlineScript'
                 inlineScript: 'az account set --subscription 4728f3f2-8386-4527-ae25-60e3318585a0; az aks get-credentials --resource-group DevCNIAKS --name DevCNIAKS;'
-                condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/patch1'))
+              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/patch1'))
 
 ##install kubectl client  on devops agent
             - task: KubectlInstaller@0
@@ -125,7 +125,7 @@ stages:
                 containers : |
                   $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
                 rolloutStatusTimeout: 120
-                condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 ###if patch version, deploy to dev environment.            
             - task: KubernetesManifest@0
               inputs:
@@ -138,7 +138,7 @@ stages:
                 containers : |
                   $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
                 rolloutStatusTimeout: 120
-                condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/patch1'))
+              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/patch1'))
 
 ##install nginx ingress controller via Helm(TLS in Azure KeyVault)
 ###check azure-keyvault-secrets-provider add-on whether exists. If no, enable it
@@ -149,7 +149,7 @@ stages:
                 scriptType: 'bash'
                 scriptLocation: 'inlineScript'
                 inlineScript: 'az account set --subscription 4728f3f2-8386-4527-ae25-60e3318585a0; az extension add --name aks-preview; az aks addon show --addon azure-keyvault-secrets-provider  --name cniaks --resource-group cniaks || az aks addon enable --addon azure-keyvault-secrets-provider  --name cniaks --resource-group cniaks;'
-                condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 ####for dev environment.
             - task: AzureCLI@2
               inputs:
@@ -157,7 +157,7 @@ stages:
                 scriptType: 'bash'
                 scriptLocation: 'inlineScript'
                 inlineScript: 'az account set --subscription 4728f3f2-8386-4527-ae25-60e3318585a0; az extension add --name aks-preview; az aks addon show --addon azure-keyvault-secrets-provider  --name devcniaks --resource-group devcniaks || az aks addon enable --addon azure-keyvault-secrets-provider  --name devcniaks --resource-group devcniaks;'
-                condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/patch1'))
+              condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/patch1'))
 
 ###check helm client whether install
             - task: Bash@3

@@ -148,7 +148,7 @@ stages:
                 azureSubscription: 'Microsoft Azure Internal Consumption(4728f3f2-8386-4527-ae25-60e3318585a0)'
                 scriptType: 'bash'
                 scriptLocation: 'inlineScript'
-                inlineScript: 'az account set --subscription 4728f3f2-8386-4527-ae25-60e3318585a0; az aks addon show --addon azure-keyvault-secrets-provider  --name cniaks --resource-group cniaks || az aks addon enable --addon azure-keyvault-secrets-provider  --name cniaks --resource-group cniaks;'
+                inlineScript: 'az account set --subscription 4728f3f2-8386-4527-ae25-60e3318585a0; az extension add --name aks-preview; az aks addon show --addon azure-keyvault-secrets-provider  --name cniaks --resource-group cniaks || az aks addon enable --addon azure-keyvault-secrets-provider  --name cniaks --resource-group cniaks;'
                 condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 ####for dev environment.
             - task: AzureCLI@2
@@ -156,7 +156,7 @@ stages:
                 azureSubscription: 'Microsoft Azure Internal Consumption(4728f3f2-8386-4527-ae25-60e3318585a0)'
                 scriptType: 'bash'
                 scriptLocation: 'inlineScript'
-                inlineScript: 'az account set --subscription 4728f3f2-8386-4527-ae25-60e3318585a0;  az aks addon show --addon azure-keyvault-secrets-provider  --name devcniaks --resource-group devcniaks || az aks addon enable --addon azure-keyvault-secrets-provider  --name devcniaks --resource-group devcniaks;'
+                inlineScript: 'az account set --subscription 4728f3f2-8386-4527-ae25-60e3318585a0; az extension add --name aks-preview; az aks addon show --addon azure-keyvault-secrets-provider  --name devcniaks --resource-group devcniaks || az aks addon enable --addon azure-keyvault-secrets-provider  --name devcniaks --resource-group devcniaks;'
                 condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/patch1'))
 
 ###check helm client whether install

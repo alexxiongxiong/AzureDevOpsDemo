@@ -80,6 +80,7 @@ stages:
             - checkout: self
 
 #Check whether the deployment has been existing in the AKS; if yes, delete it.
+##if main version, deploy to prod environment.
             - task: KubectlInstaller@0
               inputs:
                 kubectlVersion: 'latest'
@@ -90,7 +91,7 @@ stages:
                 scriptLocation: 'inlineScript'
                 inlineScript: 'az account set --subscription 4728f3f2-8386-4527-ae25-60e3318585a0; az aks get-credentials --resource-group CNIAKS --name cniaks --admin;'
                 condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-
+##if patch version, deploy to dev environment.
             - task: AzureCLI@2
               inputs:
                 azureSubscription: 'Microsoft Azure Internal Consumption(4728f3f2-8386-4527-ae25-60e3318585a0)'
@@ -110,6 +111,7 @@ stages:
                 filePath: 'EnvironmentSetting/check_deployment_existing.sh'
 
 # deploy application into AKS
+##if main version, deploy to prod environment.
             - task: KubernetesManifest@0
               inputs:
                 action: 'deploy'
@@ -122,7 +124,7 @@ stages:
                   $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
                 rolloutStatusTimeout: 120
                 condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-
+##if patch version, deploy to dev environment.            
             - task: KubernetesManifest@0
               inputs:
                 action: 'deploy'

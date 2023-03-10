@@ -20,9 +20,9 @@ kubectl get SecretProviderClass -n ${ingress_controller_namespace}|grep azure-tl
 if [ $? -eq 0 ]; then
   echo "SecretProviderClass azure-tls already exists"
 elif [ ${BUILD_SOURCEBRANCH} == "refs/heads/main" ]; then
-  kubectl apply -f SecretProviderClass_azure-tls.yaml -n ${ingress_controller_namespace}
+  kubectl apply -f manifests/SecretProviderClass_azure-tls.yaml -n ${ingress_controller_namespace}
 else
-  kubectl apply -f Dev_SecretProviderClass_azure-tls.yaml -n ${ingress_controller_namespace}
+  kubectl apply -f manifests/Dev_SecretProviderClass_azure-tls.yaml -n ${ingress_controller_namespace}
 fi
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update

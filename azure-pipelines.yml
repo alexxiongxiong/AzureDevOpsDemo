@@ -30,7 +30,6 @@ stages:
       pool:
         vmImage: $(vmImageName)
       steps:
-
 ##Use bash to configure DevOps agent
       - task: Bash@3
         inputs:

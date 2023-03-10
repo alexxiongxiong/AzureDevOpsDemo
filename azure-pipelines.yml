@@ -50,64 +50,89 @@ stages:
         inputs:
           artifactName: 'manifests'
           path: 'manifests'
-# ##run deploy stage manually
-#   - stage: ManualApprovalbeforedeploy
-#     dependsOn: Build
-#     jobs: 
-#     - job: ManualApprovalJob
-#       displayName: Manual Approval (Agentless job)
-#       pool: server
-#       steps:
-#       - task: ManualValidation@0
-#         displayName: Manual Validation
-#         inputs:
-#           notifyUsers: 'xinhaoxiong@microsoft.com'
 
-#   - stage: Deploy
-#     displayName: Deploy stage
-#     dependsOn: ManualApprovalbeforedeploy
-#     jobs:
-#     - deployment: Deploy
-#       displayName: Deploy job
-#       pool:
-#         vmImage: $(vmImageName)
-#       environment: 'myenv.azuredevopsapp' #customize with your environment
-#       strategy:
-#         runOnce:
-#           deploy:
-#             steps:
-#             - checkout: self
+##run deploy stage manually
+  - stage: ManualApprovalbeforedeploy
+    dependsOn: Build
+    jobs: 
+    - job: ManualApprovalJob
+      displayName: Manual Approval (Agentless job)
+      pool: server
+      steps:
+      - task: ManualValidation@0
+        displayName: Manual Validation
+        inputs:
+          notifyUsers: 'xinhaoxiong@microsoft.com'
 
-# #Check whether the deployment has been existing in the AKS; if yes, delete it.
-#             - task: KubectlInstaller@0
-#               inputs:
-#                 kubectlVersion: 'latest'
-#             - task: AzureCLI@2
-#               inputs:
-#                 azureSubscription: 'Microsoft Azure Internal Consumption(4728f3f2-8386-4527-ae25-60e3318585a0)'
-#                 scriptType: 'bash'
-#                 scriptLocation: 'inlineScript'
-#                 inlineScript: 'az account set --subscription 4728f3f2-8386-4527-ae25-60e3318585a0; az aks get-credentials --resource-group CNIAKS --name cniaks --admin;'
-#             - task: Bash@3
-#               inputs:
-#                 targetType: 'inline'
-#                 script: |
-#                   # Write your commands here
-#                   cat -v EnvironmentSetting/check_deployment_existing.sh
-#             - task: Bash@3
-#               inputs:
-#                 filePath: 'EnvironmentSetting/check_deployment_existing.sh'
+  - stage: Deploy
+    displayName: Deploy stage
+    dependsOn: ManualApprovalbeforedeploy
+    jobs:
+    - deployment: Deploy
+      displayName: Deploy job
+      pool:
+        vmImage: $(vmImageName)
+      environment: 'myenv.azuredevopsapp' #customize with your environment
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - checkout: self
 
-# # deploy application into AKS
-#             - task: KubernetesManifest@0
-#               inputs:
-#                 action: 'deploy'
-#                 kubernetesServiceConnection: 'cniaks-admin-kubeconfig'
-#                 namespace: 'azuredevopsapp'
-#                 manifests: |
-#                   $(Build.SourcesDirectory)/manifests/deployment.yaml
-#                   $(Build.SourcesDirectory)/manifests/service.yaml
-#                 containers : |
-#                   $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
-#                 rolloutStatusTimeout: 120
+#Check whether the deployment has been existing in the AKS; if yes, delete it.
+            - task: KubectlInstaller@0
+              inputs:
+                kubectlVersion: 'latest'
+            - task: AzureCLI@2
+              inputs:
+                azureSubscription: 'Microsoft Azure Internal Consumption(4728f3f2-8386-4527-ae25-60e3318585a0)'
+                scriptType: 'bash'
+                scriptLocation: 'inlineScript'
+                inlineScript: 'az account set --subscription 4728f3f2-8386-4527-ae25-60e3318585a0; az aks get-credentials --resource-group CNIAKS --name cniaks --admin;'
+                condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+
+            - task: AzureCLI@2
+              inputs:
+                azureSubscription: 'Microsoft Azure Internal Consumption(4728f3f2-8386-4527-ae25-60e3318585a0)'
+                scriptType: 'bash'
+                scriptLocation: 'inlineScript'
+                inlineScript: 'az account set --subscription 4728f3f2-8386-4527-ae25-60e3318585a0; az aks get-credentials --resource-group DevCNIAKS --name DevCNIAKS;'
+                condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/patch1'))
+
+            - task: Bash@3
+              inputs:
+                targetType: 'inline'
+                script: |
+                  # Write your commands here
+                  cat -v EnvironmentSetting/check_deployment_existing.sh
+            - task: Bash@3
+              inputs:
+                filePath: 'EnvironmentSetting/check_deployment_existing.sh'
+
+# deploy application into AKS
+            - task: KubernetesManifest@0
+              inputs:
+                action: 'deploy'
+                kubernetesServiceConnection: 'cniaks-admin-kubeconfig'
+                namespace: 'azuredevopsapp'
+                manifests: |
+                  $(Build.SourcesDirectory)/manifests/deployment.yaml
+                  $(Build.SourcesDirectory)/manifests/service.yaml
+                containers : |
+                  $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
+                rolloutStatusTimeout: 120
+                condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+
+            - task: KubernetesManifest@0
+              inputs:
+                action: 'deploy'
+                kubernetesServiceConnection: 'devcniaks-admin-kubeconfig'
+                namespace: 'azuredevopsapp'
+                manifests: |
+                  $(Build.SourcesDirectory)/manifests/deployment.yaml
+                  $(Build.SourcesDirectory)/manifests/service.yaml
+                containers : |
+                  $(containerRegistry).azurecr.io/$(imageRepository):$(tag)
+                rolloutStatusTimeout: 120
+                condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/patch1'))
 

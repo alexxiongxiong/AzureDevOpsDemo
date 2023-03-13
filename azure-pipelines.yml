@@ -27,8 +27,8 @@ stages:
     jobs:
     - job: Build
       displayName: Build
-      pool:
-        vmImage: $(vmImageName)
+      pool: Self-hostedAzureVM
+        # vmImage: $(vmImageName)
       steps:
 ##Use bash to configure DevOps agent
       - task: Bash@3

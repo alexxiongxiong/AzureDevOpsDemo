@@ -42,6 +42,7 @@ stages:
       displayName: Deploy job
       pool:
         vmImage: ubuntu-latest
+      environment: 'myenv.azuredevopsapp' #customize with your environment
       strategy:
         runOnce:
           deploy:
